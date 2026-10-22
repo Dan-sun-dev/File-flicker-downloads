@@ -1,0 +1,71 @@
+name: Publish verified macOS installers
+on:
+  workflow_dispatch:
+    inputs:
+      manifest:
+        description: Verified download manifest from the private build
+        required: true
+        type: string
+permissions:
+  contents: write
+concurrency:
+  group: publish-macos-0.11.1
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Download and verify built installers
+        env:
+          RELEASE_MANIFEST: ${{ inputs.manifest }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os,pathlib,re,urllib.parse,urllib.request
+          manifest=json.loads(os.environ['RELEASE_MANIFEST'])
+          assert manifest['source_repo']=='Dan-sun-dev/File-flicker'
+          assert manifest['source_run']==39847729852
+          assert manifest['source_commit']=='eace7277b127094b27a618e5217ba5039a9037c9'
+          assert manifest['version']=='0.11.1-preview'
+          names={f'File-flicker-0.11.1-preview-macOS-{arch}.dmg' for arch in ('arm64','x86_64')}
+          assert len(manifest['assets'])==2 and {a['name'] for a in manifest['assets']}==names
+          output=pathlib.Path('installers');output.mkdir()
+          lines=[]
+          for asset in manifest['assets']:
+              assert re.fullmatch('[a-f0-9]{64}',asset['sha256'])
+              assert 1000000<asset['size']<1000000000
+              assert urllib.parse.urlsplit(asset['url']).hostname=='release-assets.githubusercontent.com'
+              print('::add-mask::'+asset['url'])
+              h=hashlib.sha256();size=0
+              with urllib.request.urlopen(asset['url'],timeout=45) as source,(output/asset['name']).open('wb') as target:
+                  assert urllib.parse.urlsplit(source.geturl()).hostname=='release-assets.githubusercontent.com'
+                  while chunk:=source.read(1048576):
+                      size+=len(chunk);assert size<=asset['size'];h.update(chunk);target.write(chunk)
+              assert size==asset['size'] and h.hexdigest()==asset['sha256'],asset['name']
+              lines.append(asset['sha256']+'  '+asset['name'])
+              print('Verified '+asset['name'])
+          (output/'SHA256SUMS.txt').write_text('\n'.join(sorted(lines))+'\n')
+          PY
+      - name: Upload checked files into a draft and publish after digest verification
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag=macos-preview-0.11.1
+          if gh release view "$tag" --json isDraft > release-state.json 2>/dev/null; then
+            python -c "import json;assert json.load(open('release-state.json'))['isDraft'], 'Existing published release must not be overwritten'"
+          else
+            gh release create "$tag" --draft --prerelease --target "$GITHUB_SHA" --title "File flicker для macOS — 0.11.1 preview" --notes-file releases/macos-0.11.1.md
+          fi
+          gh release upload "$tag" installers/*.dmg installers/SHA256SUMS.txt --clobber
+          gh api "repos/$GH_REPO/releases" > releases.json
+          python - <<'PY'
+          import hashlib,json,pathlib
+          release=next(r for r in json.load(open('releases.json')) if r['tag_name']=='macos-preview-0.11.1')
+          assert release['draft']
+          assets={a['name']:a for a in release['assets']}
+          for path in pathlib.Path('installers').iterdir():
+              assert assets[path.name]['digest']=='sha256:'+hashlib.sha256(path.read_bytes()).hexdigest(),path.name
+          PY
+          gh release edit "$tag" --draft=false --prerelease --latest=false --title "File flicker для macOS — 0.11.1 preview" --notes-file releases/macos-0.11.1.md
