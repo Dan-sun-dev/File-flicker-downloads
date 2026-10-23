@@ -1,5 +1,8 @@
 name: Publish verified macOS installers
 on:
+  push:
+    paths:
+      - release-manifests/macos-0.11.1.json
   workflow_dispatch:
     inputs:
       manifest:
@@ -23,7 +26,7 @@ jobs:
         run: |
           python - <<'PY'
           import hashlib,json,os,pathlib,re,urllib.parse,urllib.request
-          manifest=json.loads(os.environ['RELEASE_MANIFEST'])
+          manifest=json.loads(os.environ['RELEASE_MANIFEST']) if os.environ.get('RELEASE_MANIFEST') else json.loads(pathlib.Path('release-manifests/macos-0.11.1.json').read_text())
           assert manifest['source_repo']=='Dan-sun-dev/File-flicker'
           assert manifest['source_run']==39847729852
           assert manifest['source_commit']=='eace7277b127094b27a618e5217ba5039a9037c9'
@@ -69,3 +72,4 @@ jobs:
               assert assets[path.name]['digest']=='sha256:'+hashlib.sha256(path.read_bytes()).hexdigest(),path.name
           PY
           gh release edit "$tag" --draft=false --prerelease --latest=false --title "File flicker для macOS — 0.11.1 preview" --notes-file releases/macos-0.11.1.md
+
