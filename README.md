@@ -9,10 +9,10 @@ File flicker — приложение для работы с изображен�
 | Компьютер | Установщик |
 | --- | --- |
 | Windows 11, x64 | [Скачать для Windows — 0.10.1](https://github.com/Dan-sun-dev/File-flicker-downloads/releases/download/desktop-preview-2026-10-22/File-flicker-0.10.1-Setup-Windows-x64.exe) |
-| Mac с Intel, macOS 12+ | [Скачать для Mac Intel — 0.11.0 preview](https://github.com/Dan-sun-dev/File-flicker-downloads/releases/download/desktop-preview-2026-10-22/File-flicker-0.11.0-preview-macOS-x86_64.dmg) |
-| Mac с чипом Apple M1 и новее, macOS 12+ | [Скачать для Apple Silicon — 0.11.0 preview](https://github.com/Dan-sun-dev/File-flicker-downloads/releases/download/desktop-preview-2026-10-22/File-flicker-0.11.0-preview-macOS-arm64.dmg) |
+| Mac с Intel, macOS 12+ | [Скачать для Mac Intel — 0.11.1 preview](https://github.com/Dan-sun-dev/File-flicker-downloads/releases/download/macos-preview-0.11.1/File-flicker-0.11.1-preview-macOS-x86_64.dmg) |
+| Mac с чипом Apple M1 и новее, macOS 12+ | [Скачать для Apple Silicon — 0.11.1 preview](https://github.com/Dan-sun-dev/File-flicker-downloads/releases/download/macos-preview-0.11.1/File-flicker-0.11.1-preview-macOS-arm64.dmg) |
 
-[Инструкция по установке](INSTALL.ru.md) · [Все файлы выпуска и контрольные суммы](https://github.com/Dan-sun-dev/File-flicker-downloads/releases/tag/desktop-preview-2026-10-22)
+[Инструкция по установке](INSTALL.ru.md) · [Выпуски и контрольные суммы](https://github.com/Dan-sun-dev/File-flicker-downloads/releases)
 
 macOS-версия предварительная, без нотарификации Apple. Автоматические проверки выполнены на macOS 15 для обеих архитектур; тестирование на реальных компьютерах с другими версиями macOS продолжается.
 
@@ -73,3 +73,4 @@ macOS-версия предварительная, без нотарификац
 Коллекции шрифтов TTC не поддерживаются. Для вариативных шрифтов преобразования с изменением типа контуров могут быть недоступны; приложение сообщит об этом.
 
 В предварительной версии для Mac видео и нейросетевые операции обрабатываются на процессоре. Скорость зависит от компьютера, размеров файлов и выбранной операции.
+
