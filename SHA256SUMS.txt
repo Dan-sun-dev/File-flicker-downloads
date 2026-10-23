@@ -1,3 +1,6 @@
 88efe8726daaae8c58131041d47191d24a8355564ad8fa391db4a0c805b03d86  File-flicker-0.10.1-Setup-Windows-x64.exe
 b7a20d89e1bf81057ec95a58675a8c90e8444b27665a2309458db79f1b0787e5  File-flicker-0.11.0-preview-macOS-arm64.dmg
 c5f9050540e37b20c51dd050d53645934a1129801334fbd122d0ab14009dcbc7  File-flicker-0.11.0-preview-macOS-x86_64.dmg
+e196d86608dbb61639296ae38e66f5ee6ac2a7e9980e9bf6121d6c708a3675fd  File-flicker-0.11.1-preview-macOS-arm64.dmg
+a9fc80f74ef73760bcd55a65b0f16368b84b5de055a84bdaf4c228806ce709e0  File-flicker-0.11.1-preview-macOS-x86_64.dmg
+
